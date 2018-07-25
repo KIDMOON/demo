@@ -33,6 +33,7 @@ public class LoginFilter extends AccessControlFilter{
 
     private SessionManager sessionManager;
 
+
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         return false;

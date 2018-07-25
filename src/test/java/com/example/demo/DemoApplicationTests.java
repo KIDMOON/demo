@@ -11,11 +11,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class DemoApplicationTests {
 
-	@Autowired
-	private Sender helloSender;
-
-	@Test
-	public void testRabbit() {
-		helloSender.send();
-	}
+//	@Autowired
+//	private Sender helloSender;
+//
+//	@Test
+//	public void testRabbit() {
+//		helloSender.send();
+//	}
 }

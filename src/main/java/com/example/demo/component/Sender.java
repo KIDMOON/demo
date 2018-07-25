@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Sender{
-
-    @Autowired
-    private AmqpTemplate template;
-
-    public void send() {
-        template.convertAndSend("queue","hello,rabbit~");
-    }
+//
+//    @Autowired
+//    private AmqpTemplate template;
+//
+//    public void send() {
+//        template.convertAndSend("queue","hello,rabbit~");
+//    }
 
 }

@@ -4,9 +4,21 @@
     <sql id="Base_Column_List" >
         id, user_id, product_id, quantity, checked, create_time, update_time
     </sql>
-    <insert id="insert" parameterType="com.example.demo.entity.User" >
+    <insert id="insert" parameterType="com.example.demo.entity.User"   useGeneratedKeys="true"  keyProperty="id">
         insert into user (name, password)
-        values ( #{name}, #{password})
+        values (#{name}, #{password})
     </insert>
+
+
+
+
+    <select id="findId" parameterType="java.lang.Long"  resultType="com.example.demo.entity.User">
+      SELECT * FROM `user` WHERE id=#{id}
+    </select>
+
+
+    <update id="update">
+      update  user set name= #{name} WHERE id=#{id}
+    </update>
 
 </mapper>

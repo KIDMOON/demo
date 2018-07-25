@@ -31,10 +31,10 @@ public class DemoApplication{
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	@Bean
-	public Object test(AmqpTemplate AmqpTemplate){
-		System.out.println("SSSSSSSSS"+AmqpTemplate.getClass().getName());
-		return  new Object();
-	}
+//	@Bean
+//	public Object test(AmqpTemplate AmqpTemplate){
+//		System.out.println("SSSSSSSSS"+AmqpTemplate.getClass().getName());
+//		return  new Object();
+//	}
 
 }

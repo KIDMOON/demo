@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class Receive {
-
-    @RabbitListener(queues="queue")
-    public void process(String str) {
-        System.out.println("Receive:"+str);
-    }
+//
+//    @RabbitListener(queues="queue")
+//    public void process(String str) {
+//        System.out.println("Receive:"+str);
+//    }
 }

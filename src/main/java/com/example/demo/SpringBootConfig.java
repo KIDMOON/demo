@@ -16,11 +16,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.Filter;
+import javax.sql.DataSource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,12 +49,13 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     }
 
 
-    @Bean(name="shiroFilter")
+    @Bean
     public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager,@Qualifier("loginFilter") LoginFilter loginFilter) {
+        System.err.println("--------------shiroFilter 已经加载----------------");
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
-        bean.setLoginUrl("/login.ftl");
+        bean.setLoginUrl("/login");
         bean.setSuccessUrl("/home");
         //配置访问权限
         Map<String,Filter>  filterMap=new LinkedHashMap<>(1);
@@ -58,12 +63,13 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         bean.setFilters(filterMap);
 
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
-        filterChainDefinitionMap.put("/test","loginFilter");
+        filterChainDefinitionMap.put("/**","loginFilter");
+        filterChainDefinitionMap.put("/test","authc");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
     }
 
-    @Bean(name = "credentialsMatcher")
+    @Bean
     public CredentialsMatcher createCredentialsMatcher() {
         return new CredentialsMatcher();
     }
@@ -89,7 +95,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
 
 
     //配置核心安全事务管理器
-    @Bean(name="securityManager")
+    @Bean
     public SecurityManager securityManager() {
         System.err.println("--------------shiro已经加载----------------");
         DefaultWebSecurityManager manager=new DefaultWebSecurityManager();
@@ -100,7 +106,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     }
 
     //配置session管理器
-    @Bean(name="sessionManager")
+    @Bean
     public SessionManager sessionManager() {
         System.err.println("--------------配置session管理器 已经加载----------------");
         DefaultWebSessionManager manager=new DefaultWebSessionManager();
@@ -145,5 +151,25 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
          loginFilter.setCache(getEhCacheManager());
         return loginFilter;
     }
+
+
+    @Bean
+    public PlatformTransactionManager mysqlTransactionManager(DataSource dataSource)
+    {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+
+//    @Bean
+//    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource)
+//    {
+//
+//
+//       JpaTransactionManager jpaTransactionManager=new JpaTransactionManager();
+//       jpaTransactionManager.setDataSource(dataSource);
+//
+//       jpaTransactionManager.setEntityManagerFactory();
+//       return new JpaTransactionManager();
+//    }
 
 }
