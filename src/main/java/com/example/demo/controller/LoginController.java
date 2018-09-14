@@ -5,7 +5,10 @@ import com.example.demo.service.UserSerivce;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +24,12 @@ import java.io.IOException;
 @Controller
 public class LoginController {
 
+    private Logger logger= LoggerFactory.getLogger(LoginController.class);
     @Autowired
     private UserSerivce userSerivce;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Autowired
@@ -60,10 +67,11 @@ public class LoginController {
 
     @RequestMapping(value = "/test",method= RequestMethod.POST)
     public void loginUser() throws Exception {
-        User user = new User();
-        user.setName("bak");
-        user.setPassword("11111");
-        userSerivce.addUser(user);
+        stringRedisTemplate.opsForValue().set("test","11");
+//        User user = new User();
+//        user.setName("bak");
+//        user.setPassword("11111");
+//        userSerivce.addUser(user);
     }
 
 
