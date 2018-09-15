@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.example.demo.Interceptor.LoginFilter;
 import com.example.demo.Interceptor.MyInterceptor;
 import com.example.demo.shiro.MyShiroRealm;
@@ -16,16 +19,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.Filter;
 import javax.sql.DataSource;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,12 +40,44 @@ import java.util.Map;
 @Configuration
 public class SpringBootConfig extends WebMvcConfigurerAdapter{
 
+    /**
+     * 拦截器配置
+     * @param registry
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
         registry.addInterceptor(new MyInterceptor());
     }
 
+
+    /**
+     * 视图解析器
+     * @param registry
+     */
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        super.addViewControllers(registry);
+        registry.addViewController("/").setViewName("/login");
+    }
+
+    /**
+     * 消息内容转换配置
+     * @param converters
+     */
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+
+        FastJsonHttpMessageConverter fastJsonHttpMessageConverter=new FastJsonHttpMessageConverter();
+        FastJsonConfig fastJsonConfig=new FastJsonConfig();
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.DisableCircularReferenceDetect,
+                SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty);
+
+        fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
+        converters.add(fastJsonHttpMessageConverter);
+
+    }
 
     @Bean(name = "ehCacheManager")
     public EhCacheManager getEhCacheManager() {

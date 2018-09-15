@@ -23,11 +23,12 @@ public class Result implements Serializable {
     public static final String STATUS_ERROR = "error";
 
 
-    private  Result(){
-        this.code=CODE_200;
+    public Result() {
+    }
+    public  Result(String message){
+        this.msg=message;
     }
     public Result(String msg, Object object) {
-        this();
         this.msg = msg;
         this.object = object;
     }
