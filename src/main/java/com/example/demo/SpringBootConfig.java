@@ -5,6 +5,7 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.example.demo.Interceptor.LoginFilter;
 import com.example.demo.Interceptor.MyInterceptor;
+import com.example.demo.common.Test;
 import com.example.demo.shiro.MyShiroRealm;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -15,21 +16,31 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.*;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform;
+import org.hibernate.engine.transaction.jta.platform.internal.WebSphereExtendedJtaPlatform.TransactionManagerAdapter;
+import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.jta.UserTransactionAdapter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.Filter;
 import javax.sql.DataSource;
+import javax.transaction.TransactionManager;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +99,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
 
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager,@Qualifier("loginFilter") LoginFilter loginFilter) {
+    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager) {
         System.err.println("--------------shiroFilter 已经加载----------------");
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
@@ -97,12 +108,13 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         bean.setSuccessUrl("/home");
         //配置访问权限
         Map<String,Filter>  filterMap=new LinkedHashMap<>(1);
-        filterMap.put("loginFilter",loginFilter);
+        filterMap.put("loginFilter",LoginFilter());
         bean.setFilters(filterMap);
 
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
+        filterChainDefinitionMap.put("/resource/**", "anon");
         filterChainDefinitionMap.put("/**","loginFilter");
-        filterChainDefinitionMap.put("/test","authc");
+//        filterChainDefinitionMap.put("/test","authc");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
     }
@@ -143,7 +155,10 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         return manager;
     }
 
-    //配置session管理器
+    /**
+     * 配置session管理器
+     * @return
+     */
     @Bean
     public SessionManager sessionManager() {
         System.err.println("--------------配置session管理器 已经加载----------------");
@@ -182,32 +197,12 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         return new JavaUuidSessionIdGenerator();
     }
 
-    @Bean(name ="loginFilter")
+
     public LoginFilter LoginFilter(){
          LoginFilter loginFilter=new  LoginFilter();
          loginFilter.setSessionManager(sessionManager());
          loginFilter.setCache(getEhCacheManager());
         return loginFilter;
     }
-
-
-    @Bean
-    public PlatformTransactionManager mysqlTransactionManager(DataSource dataSource)
-    {
-        return new DataSourceTransactionManager(dataSource);
-    }
-
-
-//    @Bean
-//    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource)
-//    {
-//
-//
-//       JpaTransactionManager jpaTransactionManager=new JpaTransactionManager();
-//       jpaTransactionManager.setDataSource(dataSource);
-//
-//       jpaTransactionManager.setEntityManagerFactory();
-//       return new JpaTransactionManager();
-//    }
 
 }

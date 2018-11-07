@@ -10,8 +10,6 @@
     </insert>
 
 
-
-
     <select id="findId" parameterType="java.lang.Long"  resultType="com.example.demo.entity.User">
       SELECT * FROM `user` WHERE id=#{id}
     </select>
@@ -20,5 +18,11 @@
     <update id="update">
       update  user set name= #{name} WHERE id=#{id}
     </update>
+
+
+
+    <select id="findOneName" resultType="com.example.demo.entity.User">
+        SELECT * FROM `user` WHERE name=#{name}
+    </select>
 
 </mapper>

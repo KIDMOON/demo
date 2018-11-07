@@ -20,13 +20,13 @@ public class AdviceController {
 
     private Logger logger=LoggerFactory.getLogger(AdviceController.class);
 
-    @ExceptionHandler(Exception.class)
-    public Result exceptionHandler(HttpServletRequest request, HttpServletResponse response,Exception ex){
-        logger.info("出错了");
-        Result result=new Result(ex.getMessage());
-        result.setCode(Result.CODE_500);
-        return result;
-    }
+//    @ExceptionHandler(Exception.class)
+//    public Result exceptionHandler(HttpServletRequest request, HttpServletResponse response,Exception ex){
+//        logger.info("出错了");
+//        Result result=new Result(ex.getMessage());
+//        result.setCode(Result.CODE_500);
+//        return result;
+//    }
 
 
 

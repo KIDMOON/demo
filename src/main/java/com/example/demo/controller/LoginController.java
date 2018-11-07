@@ -5,6 +5,7 @@ import com.example.demo.service.UserSerivce;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,10 @@ public class LoginController {
 //    private Sender helloSender;
 
     @RequestMapping(value = "/login",method= RequestMethod.GET)
-    public String login() {
-        return "resource/login";
+    public String login() { return "resource/login";
     }
 
-    @RequestMapping(value = "/loginss",method= RequestMethod.POST)
+    @RequestMapping(value = "/login",method= RequestMethod.POST)
     public String loginUser(String userName, String passWord,HttpSession httpSession) throws IOException {
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(userName,passWord);
         Subject subject=SecurityUtils.getSubject();
@@ -68,10 +68,10 @@ public class LoginController {
     @RequestMapping(value = "/test",method= RequestMethod.POST)
     public void loginUser() throws Exception {
         stringRedisTemplate.opsForValue().set("test","11");
-//        User user = new User();
-//        user.setName("bak");
-//        user.setPassword("11111");
-//        userSerivce.addUser(user);
+        User user = new User();
+        user.setName("bak");
+        user.setPassword("11111");
+        userSerivce.addUser(user);
     }
 
 

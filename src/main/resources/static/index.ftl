@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="no-js">
 
@@ -8,7 +7,6 @@
     <h1>Login</h1>
 
          <button id="bu" value="按钮"></button>
-        <p>Or connect with:1111</p>
         </p>
     </div>
 </div>

@@ -20,6 +20,9 @@ public class UserServiceImpl implements UserSerivce {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private UserRep userRep;
+
     /**
      * spring 事务测试
      * 需要指定事务回滚的异常
@@ -28,11 +31,12 @@ public class UserServiceImpl implements UserSerivce {
      * @throws Exception
      */
     @Override
-    @Transactional(propagation =Propagation.REQUIRED,value = "mysqlTransactionManager")
-    public void addUser(User user){
-       Long id=userMapper.insert(user);
-//        throw new NullPointerException();
-        testService.ss(user.getId());
+    @Transactional(rollbackFor = {Exception.class})
+    public void addUser(User user) throws IllegalAccessException {
+//        userRep.save(user);
+        userMapper.insert(user);
+//        throw new IllegalAccessException();
+//        testService.ss(user.getId());
     }
 
 }

@@ -21,10 +21,10 @@ public class TestServicelmpl implements TestService {
 
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW,value = "mysqlTransactionManager")
+    @Transactional(value="transactionManager",readOnly=true)
     public void ss(Long userId) {
         User user=userMapper.findId(userId);
-        userMapper.update(user.getId(),"sssssss");
+//        userMapper.update(user.getId(),"sssssss");
         System.out.println(userId);
     }
 }

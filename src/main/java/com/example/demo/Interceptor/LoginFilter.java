@@ -36,7 +36,16 @@ public class LoginFilter extends AccessControlFilter{
 
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
+        if (((HttpServletRequest) servletRequest).getRequestURI().equals(getLoginUrl())){
+            return  true;
+        }
+
         return false;
+    }
+
+    @Override
+    public String getLoginUrl() {
+        return "/login";
     }
 
     @Override
@@ -45,6 +54,7 @@ public class LoginFilter extends AccessControlFilter{
 
         //如果用户没有登录，退出
         if (!subject.isAuthenticated()) {
+            redirectToLogin(servletRequest,servletResponse);
             return true;
         }
         Session session = subject.getSession();

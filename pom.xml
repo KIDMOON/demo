@@ -156,6 +156,13 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>com.alicp.jetcache</groupId>
+			<artifactId>jetcache-starter-redis</artifactId>
+			<version>2.5.7</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

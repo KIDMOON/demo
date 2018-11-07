@@ -27,7 +27,7 @@
 
 <div class="page-container">
     <h1>Login</h1>
-    <form action="/loginss" method="post">
+    <form action="/login" method="post">
         <input type="text" name="userName" class="username" placeholder="Username">
         <input type="password" name="passWord" class="password" placeholder="Password">
         <button type="submit">Sign me in</button>
@@ -40,10 +40,10 @@
 </div>
 
 <!-- Javascript -->
-<script src="assets/js/jquery-1.8.2.min.js"></script>
-<script src="assets/js/supersized.3.2.7.min.js"></script>
-<script src="assets/js/supersized-init.js"></script>
-<script src="assets/js/scripts.js"></script>
+<script src="/resource/assets/js/jquery-1.8.2.min.js"></script>
+<script src="/resource/assets/js/supersized.3.2.7.min.js"></script>
+<script src="/resource/assets/js/supersized-init.js"></script>
+<script src="/resource/assets/js/scripts.js"></script>
 
 </body>
 
