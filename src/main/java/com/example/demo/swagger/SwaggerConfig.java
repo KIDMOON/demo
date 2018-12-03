@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.swagger;
 
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.PathSelectors;

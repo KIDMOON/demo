@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.swagger;
 
+import com.example.demo.swagger.SwaggerConfig;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 
 import java.lang.annotation.*;
