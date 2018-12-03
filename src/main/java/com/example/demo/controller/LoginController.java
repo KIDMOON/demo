@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.TestName;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserSerivce;
 import org.apache.shiro.SecurityUtils;
@@ -31,7 +32,6 @@ public class LoginController {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
 
     @Autowired
     private HttpServletRequest httpServletRequest;
@@ -65,13 +65,19 @@ public class LoginController {
         return "index";
     }
 
-    @RequestMapping(value = "/test",method= RequestMethod.POST)
-    public void loginUser() throws Exception {
-        stringRedisTemplate.opsForValue().set("test","11");
-        User user = new User();
-        user.setName("bak");
-        user.setPassword("11111");
-        userSerivce.addUser(user);
+//    @RequestMapping(value = "/test",method= RequestMethod.POST)
+//    public void loginUser() throws Exception {
+//        stringRedisTemplate.opsForValue().set("test","11");
+//        User user = new User();
+//        user.setName("bak");
+//        user.setPassword("11111");
+//        userSerivce.addUser(user);
+//    }
+
+
+    @RequestMapping(value = "/test",method= RequestMethod.GET)
+    public String test() {
+        return "test";
     }
 
 

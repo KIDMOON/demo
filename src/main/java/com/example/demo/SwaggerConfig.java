@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -15,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @version 1.0
  * @date 2018/9/14
  */
-@Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 
@@ -27,4 +25,9 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any()) // 对所有路径进行监控
                 .build();
     }
+
+//    @Bean
+//    public  PointCut pointCut(){
+//        return new PointCut();
+//    }
 }

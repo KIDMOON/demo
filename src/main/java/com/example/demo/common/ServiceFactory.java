@@ -1,5 +1,7 @@
 package com.example.demo.common;
 
+
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 
@@ -15,7 +17,7 @@ public class ServiceFactory {
         enhancer.setCallback(methodInterceptor);
         return enhancer.create();
 
-    };
+    }
 
 
 }

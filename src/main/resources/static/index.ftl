@@ -5,8 +5,8 @@
 
 <div class="page-container">
     <h1>Login</h1>
-
          <button id="bu" value="按钮"></button>
+         <button id="direct" value="跳转">跳转</button>
         </p>
     </div>
 </div>
@@ -21,6 +21,12 @@
                 success: function (data) {
                 }
             });
+        });
+
+
+        $("#direct").click(function () {
+            window.location.href = 'http://'+window.location.host+"/test";
+
         });
     });
 </script>

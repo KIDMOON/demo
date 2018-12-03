@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Profile;
  * @date 2018/11/7
  */
 @Configuration
-@MapperScan("com.example.demo")
+@MapperScan("com.example.demo.mapper")
 public class MybatisPlusConfig {
 
 
