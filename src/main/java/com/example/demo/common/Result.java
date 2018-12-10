@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Result implements Serializable {
     private int code;
     private String status;
-    private String msg;
+    private String message;
     private Object object;
 
     public static final int CODE_200 = 200;
@@ -24,12 +24,13 @@ public class Result implements Serializable {
 
 
     public Result() {
+        this.code=CODE_200;
     }
     public  Result(String message){
-        this.msg=message;
+        this.message=message;
     }
-    public Result(String msg, Object object) {
-        this.msg = msg;
+    public Result(String message, Object object) {
+        this.message = message;
         this.object = object;
     }
 
@@ -58,12 +59,12 @@ public class Result implements Serializable {
         this.status = status;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Object getObject() {

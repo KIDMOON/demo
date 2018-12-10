@@ -22,7 +22,7 @@
 
 
     <select id="findOneName" resultType="com.example.demo.entity.User">
-        SELECT * FROM `user` WHERE name=#{name}
+        SELECT *  FROM `user` WHERE name=#{name}
     </select>
 
 </mapper>

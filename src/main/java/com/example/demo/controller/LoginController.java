@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Result;
 import com.example.demo.common.TestName;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserSerivce;
 import org.apache.shiro.SecurityUtils;
@@ -12,8 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ import java.io.IOException;
 /**
  * @author：Kid date:2018/3/1
  */
-@Controller
+@RestController
 public class LoginController {
 
     private Logger logger= LoggerFactory.getLogger(LoginController.class);
@@ -45,20 +46,23 @@ public class LoginController {
     public String login() { return "resource/login";
     }
 
-    @RequestMapping(value = "/login",method= RequestMethod.POST)
-    public String loginUser(String userName, String passWord,HttpSession httpSession) throws IOException {
-        UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(userName,passWord);
+    @RequestMapping(value = "/admin/login",method= RequestMethod.POST)
+    @ResponseBody
+    public Result loginUser(@RequestBody UserDTO userDTO, HttpSession httpSession) throws IOException {
+        UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(userDTO.getUserName(),userDTO.getPassWord());
         Subject subject=SecurityUtils.getSubject();
+        Result result=new Result();
        try {
            subject.login(usernamePasswordToken);
            Object user= subject.getPrincipal();
            httpSession.setAttribute("user", user);
-           return  "index";
+           return  result;
        }catch (Exception e){
+           result.setMessage("账号密码不匹配");
+           result.setCode(Result.CODE_500);
+           return result;
        }
-        return  "redirect:/login";
     }
-
 
     @RequestMapping(value = "/home",method= RequestMethod.GET)
     public String home() {
@@ -73,12 +77,28 @@ public class LoginController {
 //        user.setPassword("11111");
 //        userSerivce.addUser(user);
 //    }
-
-
     @RequestMapping(value = "/test",method= RequestMethod.GET)
     public String test() {
         return "test";
     }
 
+    @RequestMapping(value = "/admin/logout",method= RequestMethod.GET)
+    @ResponseBody
+    public Result logout() {
+        Subject subject = SecurityUtils.getSubject();
+        Result result = new Result();
+        subject.logout();
+        return result;
+
+    }
+
+    @RequestMapping(value = "/unlogin",method= RequestMethod.GET)
+    @ResponseBody
+    public Result unlogin() {
+        Result result = new Result();
+        result.setMessage("not  login");
+        result.setCode(301);
+        return result;
+    }
 
 }

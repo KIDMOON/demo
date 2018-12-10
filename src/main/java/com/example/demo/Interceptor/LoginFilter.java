@@ -39,13 +39,7 @@ public class LoginFilter extends AccessControlFilter{
         if (((HttpServletRequest) servletRequest).getRequestURI().equals(getLoginUrl())){
             return  true;
         }
-
         return false;
-    }
-
-    @Override
-    public String getLoginUrl() {
-        return "/login";
     }
 
     @Override
@@ -55,7 +49,7 @@ public class LoginFilter extends AccessControlFilter{
         //如果用户没有登录，退出
         if (!subject.isAuthenticated()) {
             redirectToLogin(servletRequest,servletResponse);
-            return true;
+            return false;
         }
         Session session = subject.getSession();
 
@@ -68,16 +62,14 @@ public class LoginFilter extends AccessControlFilter{
             }
             saveRequest(servletRequest);
             //重定向
-            WebUtils.issueRedirect(servletRequest,servletResponse,"/login.ftl");
+//            WebUtils.issueRedirect(servletRequest,servletResponse,"/login.ftl");
 //            ((HttpServletResponse)servletResponse).sendRedirect("/login.ftl");
             System.out.println("踢出");
             return false;
         }
 
-
         Serializable serializable1=session.getId();
-        String name = (String) subject.getPrincipal();
-
+        String  name = ((User) subject.getPrincipal()).getName();
         Deque<Serializable> deque=cache.get(name);
 
         if(deque==null){
@@ -119,4 +111,8 @@ public class LoginFilter extends AccessControlFilter{
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
+
+
+
+
 }

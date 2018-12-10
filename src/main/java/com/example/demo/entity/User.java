@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="user")
-public class User {
+public class User extends  BaseEnity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

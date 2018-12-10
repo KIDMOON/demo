@@ -5,6 +5,7 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.example.demo.Interceptor.LoginFilter;
 import com.example.demo.Interceptor.MyInterceptor;
+import com.example.demo.filter.CrosFilter;
 import com.example.demo.shiro.CredentialsMatcher;
 import com.example.demo.shiro.MyShiroRealm;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +75,6 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
 
         fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
         converters.add(fastJsonHttpMessageConverter);
-
     }
 
     @Bean(name = "ehCacheManager")
@@ -90,15 +91,19 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
-        bean.setLoginUrl("/login");
-        bean.setSuccessUrl("/home");
+//        bean.setLoginUrl("/login");
+//        bean.setSuccessUrl("/home");
         //配置访问权限
+        bean.setLoginUrl("/unlogin");
         Map<String,Filter>  filterMap=new LinkedHashMap<>(1);
         filterMap.put("loginFilter",LoginFilter());
         bean.setFilters(filterMap);
 
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
+        //配置不需要验证的权限
         filterChainDefinitionMap.put("/resource/**", "anon");
+        filterChainDefinitionMap.put("/admin/login", "anon");
+        filterChainDefinitionMap.put("/admin/logout", "anon");
         filterChainDefinitionMap.put("/**","loginFilter");
 //        filterChainDefinitionMap.put("/test","authc");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
@@ -117,6 +122,18 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         return authRealm;
     }
 
+
+    @Bean
+    public FilterRegistrationBean crosFilter() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        CrosFilter crosFilter = new CrosFilter();
+        registrationBean.setFilter(crosFilter);
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/*");
+        registrationBean.setUrlPatterns(urlPatterns);
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
@@ -188,7 +205,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
          LoginFilter loginFilter=new  LoginFilter();
          loginFilter.setSessionManager(sessionManager());
          loginFilter.setCache(getEhCacheManager());
-        return loginFilter;
+         return loginFilter;
     }
 
 }
