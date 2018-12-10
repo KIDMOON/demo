@@ -8,6 +8,7 @@ import org.apache.shiro.session.mgt.DefaultSessionKey;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.session.mgt.WebSessionKey;
 import org.apache.shiro.web.util.WebUtils;
 
@@ -23,7 +24,7 @@ import java.util.LinkedList;
 /**
  * @author：Kid date:2018/3/2
  */
-public class LoginFilter extends AccessControlFilter{
+public class LoginFilter extends FormAuthenticationFilter {
 
     public  static  final  String LOGINOUT="loginOut";
     /**
@@ -35,7 +36,7 @@ public class LoginFilter extends AccessControlFilter{
 
 
     @Override
-    protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
+    protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o){
         if (((HttpServletRequest) servletRequest).getRequestURI().equals(getLoginUrl())){
             return  true;
         }

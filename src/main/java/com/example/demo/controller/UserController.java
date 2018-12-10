@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.common.Result;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,8 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
+
+    @RequiresPermissions("user:add")
     @GetMapping("info")
     public Result findAdmin(){
         Result result=new Result();

@@ -83,7 +83,6 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/admin/logout",method= RequestMethod.GET)
-    @ResponseBody
     public Result logout() {
         Subject subject = SecurityUtils.getSubject();
         Result result = new Result();
@@ -93,7 +92,6 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/unlogin",method= RequestMethod.GET)
-    @ResponseBody
     public Result unlogin() {
         Result result = new Result();
         result.setMessage("not  login");
@@ -101,4 +99,13 @@ public class LoginController {
         return result;
     }
 
+
+
+    @RequestMapping(value = "/401",method= RequestMethod.GET)
+    public Result permission() {
+        Result result = new Result();
+        result.setMessage("not permission");
+        result.setCode(302);
+        return result;
+    }
 }

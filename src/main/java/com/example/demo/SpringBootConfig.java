@@ -13,11 +13,16 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.*;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -90,22 +95,19 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         System.err.println("--------------shiroFilter 已经加载----------------");
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
-        //配置登录的url和登录成功的url
-//        bean.setLoginUrl("/login");
-//        bean.setSuccessUrl("/home");
         //配置访问权限
         bean.setLoginUrl("/unlogin");
-        Map<String,Filter>  filterMap=new LinkedHashMap<>(1);
+        bean.setUnauthorizedUrl("/401");
+        Map<String,Filter>  filterMap=bean.getFilters();
         filterMap.put("loginFilter",LoginFilter());
-        bean.setFilters(filterMap);
-
+        bean.getFilterChainDefinitionMap();
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
         //配置不需要验证的权限
         filterChainDefinitionMap.put("/resource/**", "anon");
         filterChainDefinitionMap.put("/admin/login", "anon");
+        filterChainDefinitionMap.put("/401", "anon");
         filterChainDefinitionMap.put("/admin/logout", "anon");
         filterChainDefinitionMap.put("/**","loginFilter");
-//        filterChainDefinitionMap.put("/test","authc");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
     }
@@ -123,17 +125,17 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     }
 
 
-    @Bean
-    public FilterRegistrationBean crosFilter() {
-        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        CrosFilter crosFilter = new CrosFilter();
-        registrationBean.setFilter(crosFilter);
-        List<String> urlPatterns = new ArrayList<>();
-        urlPatterns.add("/*");
-        registrationBean.setUrlPatterns(urlPatterns);
-        registrationBean.setOrder(1);
-        return registrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean crosFilter() {
+//        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+//        CrosFilter crosFilter = new CrosFilter();
+//        registrationBean.setFilter(crosFilter);
+//        List<String> urlPatterns = new ArrayList<>();
+//        urlPatterns.add("/*");
+//        registrationBean.setUrlPatterns(urlPatterns);
+//        registrationBean.setOrder(1);
+//        return registrationBean;
+//    }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
@@ -207,5 +209,16 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
          loginFilter.setCache(getEhCacheManager());
          return loginFilter;
     }
+
+    /**
+     * 开启shiro aop注解支持. 使用代理方式
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
+    }
+
 
 }
