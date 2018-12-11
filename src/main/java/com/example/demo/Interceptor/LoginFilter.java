@@ -63,8 +63,7 @@ public class LoginFilter extends FormAuthenticationFilter {
             }
             saveRequest(servletRequest);
             //重定向
-//            WebUtils.issueRedirect(servletRequest,servletResponse,"/login.ftl");
-//            ((HttpServletResponse)servletResponse).sendRedirect("/login.ftl");
+            WebUtils.issueRedirect(servletRequest,servletResponse,"/unlogin");
             System.out.println("踢出");
             return false;
         }

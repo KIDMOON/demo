@@ -96,7 +96,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
         //配置访问权限
-        bean.setLoginUrl("/unlogin");
+        bean.setLoginUrl("/admin/unlogin");
         bean.setUnauthorizedUrl("/401");
         Map<String,Filter>  filterMap=bean.getFilters();
         filterMap.put("loginFilter",LoginFilter());
@@ -107,6 +107,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         filterChainDefinitionMap.put("/admin/login", "anon");
         filterChainDefinitionMap.put("/401", "anon");
         filterChainDefinitionMap.put("/admin/logout", "anon");
+        filterChainDefinitionMap.put("/admin/unlogin","anon");
         filterChainDefinitionMap.put("/**","loginFilter");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
@@ -125,17 +126,17 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     }
 
 
-//    @Bean
-//    public FilterRegistrationBean crosFilter() {
-//        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-//        CrosFilter crosFilter = new CrosFilter();
-//        registrationBean.setFilter(crosFilter);
-//        List<String> urlPatterns = new ArrayList<>();
-//        urlPatterns.add("/*");
-//        registrationBean.setUrlPatterns(urlPatterns);
-//        registrationBean.setOrder(1);
-//        return registrationBean;
-//    }
+    @Bean
+    public FilterRegistrationBean crosFilter() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        CrosFilter crosFilter = new CrosFilter();
+        registrationBean.setFilter(crosFilter);
+        List<String> urlPatterns = new ArrayList<>();
+        urlPatterns.add("/*");
+        registrationBean.setUrlPatterns(urlPatterns);
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {

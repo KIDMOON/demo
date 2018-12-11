@@ -91,7 +91,7 @@ public class LoginController {
 
     }
 
-    @RequestMapping(value = "/unlogin",method= RequestMethod.GET)
+    @RequestMapping(value = "/admin/unlogin",method= RequestMethod.GET)
     public Result unlogin() {
         Result result = new Result();
         result.setMessage("not  login");
