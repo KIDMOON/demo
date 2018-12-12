@@ -181,7 +181,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
 
     @Bean
     public SimpleCookie simpleCookie(){
-        SimpleCookie simpleCookie=new SimpleCookie("sid");
+        SimpleCookie simpleCookie=new SimpleCookie("kid");
         simpleCookie.setHttpOnly(true);
         simpleCookie.setMaxAge(2592000);
         return simpleCookie;

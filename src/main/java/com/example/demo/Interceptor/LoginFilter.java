@@ -63,7 +63,7 @@ public class LoginFilter extends FormAuthenticationFilter {
             }
             saveRequest(servletRequest);
             //重定向
-            WebUtils.issueRedirect(servletRequest,servletResponse,"/unlogin");
+            WebUtils.issueRedirect(servletRequest,servletResponse,"/admin/unlogin");
             System.out.println("踢出");
             return false;
         }
