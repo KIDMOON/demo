@@ -42,10 +42,6 @@ public class LoginController {
 //    @Autowired
 //    private Sender helloSender;
 
-    @RequestMapping(value = "/login",method= RequestMethod.GET)
-    public String login() { return "resource/login";
-    }
-
     @RequestMapping(value = "/admin/login",method= RequestMethod.POST)
     @ResponseBody
     public Result loginUser(@RequestBody UserDTO userDTO, HttpSession httpSession) throws IOException {

@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurationSupport;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
@@ -21,7 +23,6 @@ public class CommandWebSocketAutoConfiguration {
         return new DefaultWebSocketMessager();
     }
 
-
     @Bean
     public ServletServerContainerFactoryBean createServletServerContainerFactoryBean() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
@@ -32,7 +33,8 @@ public class CommandWebSocketAutoConfiguration {
 
 
     @Configuration
-    public static class HandlerConfiguration extends WebSocketConfigurationSupport {
+    @EnableWebSocket
+    public static class HandlerConfiguration implements WebSocketConfigurer {
         private String[] allowedOrigins;
 
         public void setAllowedOrigins(String[] allowedOrigins) {
@@ -42,8 +44,9 @@ public class CommandWebSocketAutoConfiguration {
         @Autowired(required = false)
         private List<WebSocketMessager> webSocketMessagers;
 
+
         @Override
-        protected void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
             CommandWebSocketMessageDispatcher dispatcher = new CommandWebSocketMessageDispatcher();
             dispatcher.setWebSocketMessagers(webSocketMessagers);
 
@@ -56,6 +59,4 @@ public class CommandWebSocketAutoConfiguration {
             registry.addHandler(dispatcher, "/messageHandler")
                     .setAllowedOrigins("*");
         }
-    }
-
-}
+    }}

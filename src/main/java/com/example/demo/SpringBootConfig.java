@@ -6,8 +6,8 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.example.demo.Interceptor.LoginFilter;
 import com.example.demo.Interceptor.MyInterceptor;
 import com.example.demo.filter.CrosFilter;
-import com.example.demo.shiro.CredentialsMatcher;
-import com.example.demo.shiro.MyShiroRealm;
+import com.example.demo.shiro.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -20,12 +20,14 @@ import org.apache.shiro.web.mgt.*;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -41,8 +43,14 @@ import java.util.Map;
 /**
  * @author：Kid date:2018/3/1
  */
+@Slf4j
 @Configuration
 public class SpringBootConfig extends WebMvcConfigurerAdapter{
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+    @Autowired
+    private SessionRedisProperties properties;
 
     /**
      * 拦截器配置
@@ -103,11 +111,14 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         bean.getFilterChainDefinitionMap();
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
         //配置不需要验证的权限
-        filterChainDefinitionMap.put("/resource/**", "anon");
+        filterChainDefinitionMap.put("/res/**", "anon");
+        filterChainDefinitionMap.put("/index", "anon");
         filterChainDefinitionMap.put("/admin/login", "anon");
         filterChainDefinitionMap.put("/401", "anon");
         filterChainDefinitionMap.put("/admin/logout", "anon");
         filterChainDefinitionMap.put("/admin/unlogin","anon");
+//        filterChainDefinitionMap.put("/messageHandler","anon");
+
         filterChainDefinitionMap.put("/**","loginFilter");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
@@ -171,7 +182,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
         DefaultWebSessionManager manager=new DefaultWebSessionManager();
         manager.setGlobalSessionTimeout(3600000);
         manager.setCacheManager(getEhCacheManager());
-        manager.setSessionDAO(enterpriseCacheSessionDAO());
+        manager.setSessionDAO(shiroRedisSessionDao());
         manager.setDeleteInvalidSessions(true);
         manager.setSessionValidationSchedulerEnabled(true);
         manager.setSessionIdCookieEnabled(true);
@@ -183,19 +194,33 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     public SimpleCookie simpleCookie(){
         SimpleCookie simpleCookie=new SimpleCookie("kid");
         simpleCookie.setHttpOnly(true);
+        simpleCookie.setDomain("192.168.1.84");
+        simpleCookie.setPath("/");
         simpleCookie.setMaxAge(2592000);
         return simpleCookie;
     }
 
     //session 缓存
-    @Bean
-    public EnterpriseCacheSessionDAO  enterpriseCacheSessionDAO(){
-        EnterpriseCacheSessionDAO enterpriseCacheSessionDAO=new EnterpriseCacheSessionDAO();
-        //session缓存在事务中
-        enterpriseCacheSessionDAO.setActiveSessionsCacheName("shiro-activeSessionCache");
-        enterpriseCacheSessionDAO.setSessionIdGenerator(javaUuidSessionIdGenerator());
-        return enterpriseCacheSessionDAO;
+//    @Bean
+//    public EnterpriseCacheSessionDAO  enterpriseCacheSessionDAO(){
+//        EnterpriseCacheSessionDAO enterpriseCacheSessionDAO=new EnterpriseCacheSessionDAO();
+//        //session缓存在事务中
+//        enterpriseCacheSessionDAO.setActiveSessionsCacheName("shiro-activeSessionCache");
+//        enterpriseCacheSessionDAO.setSessionIdGenerator(javaUuidSessionIdGenerator());
+//        return enterpriseCacheSessionDAO;
+//    }
 
+    @Bean
+    public ShiroRedisSessionDao shiroRedisSessionDao() {
+        log.info("@Bean SessionDao");ShiroRedisSessionDao dao = new ShiroRedisSessionDao(redisConnectionFactory.getConnection(), properties);
+        dao.setCacheManager(shiroRedisCacheManager());
+        return dao;
+    }
+
+    @Bean
+    public ShiroRedisCacheManager shiroRedisCacheManager() {
+        log.info("@Bean CacheManager");
+        return new ShiroRedisCacheManager(redisConnectionFactory.getConnection(), properties);
     }
 
     @Bean

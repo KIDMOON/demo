@@ -17,8 +17,6 @@ public class UserController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-
-    @RequiresPermissions("user:add")
     @GetMapping("info")
     public Result findAdmin(){
         Result result=new Result();

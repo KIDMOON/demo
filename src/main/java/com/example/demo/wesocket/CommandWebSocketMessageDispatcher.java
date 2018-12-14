@@ -1,11 +1,13 @@
 package com.example.demo.wesocket;
 
+import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
+import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -32,6 +34,12 @@ public class CommandWebSocketMessageDispatcher extends TextWebSocketHandler {
         if (StringUtils.isEmpty(payload)) {
             return;
         }
+
+        Message message1=new Message();
+        message1.setContext(message.getPayload());
+        message1.setTime(DateUtil.now());
+        message1.setSender(session.getPrincipal());
+        message=new TextMessage(JSON.toJSONString(message1));
         if (webSocketMessagers != null) {
             for (WebSocketMessager webSocketMessager:webSocketMessagers){
                 webSocketMessager.sendAll(message);
