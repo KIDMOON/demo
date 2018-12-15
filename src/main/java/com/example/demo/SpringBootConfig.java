@@ -194,7 +194,7 @@ public class SpringBootConfig extends WebMvcConfigurerAdapter{
     public SimpleCookie simpleCookie(){
         SimpleCookie simpleCookie=new SimpleCookie("kid");
         simpleCookie.setHttpOnly(true);
-        simpleCookie.setDomain("192.168.1.84");
+//        simpleCookie.setDomain("192.168.1.84");
         simpleCookie.setPath("/");
         simpleCookie.setMaxAge(2592000);
         return simpleCookie;
